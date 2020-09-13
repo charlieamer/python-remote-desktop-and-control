@@ -50,6 +50,8 @@ class CommandBase():
     def __str__(self):
         return self.__class__.__name__
 
+mouseController = mouse.Controller()
+
 class CommandMoveMouse(CommandBase):
     speed = 10
 
@@ -61,8 +63,9 @@ class CommandMoveMouse(CommandBase):
         CommandBase.__init__(self, config)
 
     def start(self):
+        global mouseController
         CommandBase.start(self)
-        self.controller = mouse.Controller()
+        self.controller = mouseController
 
     def update(self):
         CommandBase.update(self)
@@ -160,5 +163,9 @@ class Commands(threading.Thread):
     def run(self):
         while self.shouldRun:
             if self.config[VAR_SHOULD_UPDATE_COMMANDS]:
-                self.updateCommand()
+                try:
+                    self.updateCommand()
+                except Exception as e:
+                    print("Error happened")
+                    print(e)
             time.sleep(0.01)
